@@ -16,14 +16,12 @@ public class UserRepository {
         this.jdbc = jdbc;
     }
 
-    public Optional<User> findByName(String name) {
-        List<User> users = jdbc.query(
-                "SELECT name FROM users WHERE name=?",
-                (rs, rowNum) -> new User(rs.getString("name")),
-                name);
-        return users.stream().findFirst();
+    public void save(User user) {
     }
 
+    public Optional<User> findByUsername(String username) {
+        return Optional.empty();
+    }
 }
 
 
