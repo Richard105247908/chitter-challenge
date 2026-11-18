@@ -1,6 +1,6 @@
 package com.example.chitter_challenge.repository;
 
-import org.apache.catalina.User;
+import com.example.chitter_challenge.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
