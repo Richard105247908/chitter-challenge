@@ -16,7 +16,7 @@ public class UserRepository {
         this.jdbc = jdbc;
     }
 
-    public void save(User user) {
+    public User save(User user) {
         jdbc.update("INSERT INTO users (email, password_hash, name, username) VALUES (?, ?, ?, ?)",
                 user.getEmail(), user.getPasswordHash(), user.getName(), user.getUsername()
         );
