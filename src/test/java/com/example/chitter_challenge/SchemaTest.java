@@ -49,6 +49,11 @@ class SchemaTest {
                 ));
     }
 
+    @Test
+    void acceptsPeepFromKnownUser() {
+
+    }
+
 
     private void insertUser(String email, String username) {
         jdbc.update("INSERT INTO users (email, password_hash, name, username) VALUES (?, ?, ?, ?)",
