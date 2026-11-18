@@ -52,6 +52,19 @@ class SchemaTest {
     @Test
     void acceptsPeepFromKnownUser() {
 
+        insertUser("alex@example.com", "alex1");
+
+
+        Long userId = jdbc.queryForObject("SELECT id FROM users WHERE username = ?",
+                Long.class,
+                "alex1"
+        );
+
+        jdbc.update("INSERT INTO peeps (user_id, message, created_at) VALUES (?,?,?)",
+                userId, "Hello world", OffsetDateTime.now());
+
+        Integer count = jdbc.queryForObject("SELECT COUNT(*) FROM peeps", Integer.class);
+        assertEquals(1, count);
     }
 
 
