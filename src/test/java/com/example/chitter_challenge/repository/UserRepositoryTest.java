@@ -38,4 +38,12 @@ public class UserRepositoryTest {
         assertEquals("bob@example.com", found.get().getEmail());
     }
 
+    @Test
+    void returnsEmptyWhenUsernameDoesNotExist() {
+        repository.save(new User("alex@example.com", "hashed_pw", "Alex", "alex1"));
+
+        Optional<User> found = repository.findByUsername("nobody");
+        assertTrue(found.isEmpty());
+    }
+
 }
