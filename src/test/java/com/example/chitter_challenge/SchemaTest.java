@@ -35,4 +35,10 @@ class SchemaTest {
             );
         });
     }
+
+    private void insertUser(String email, String username) {
+        jdbc.update("INSERT INTO users (email, password_hash, name, username) VALUES (?, ?, ?, ?)",
+                email, "hashed_pw", "Test User", username
+        );
+    }
 }
