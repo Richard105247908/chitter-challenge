@@ -23,18 +23,18 @@ class SchemaTest {
 
     @Test
     void rejectsDuplicateEmail() {
-        jdbc.update(
-                "INSERT INTO users (email, password_hash, name, username) VALUES (?, ?, ?, ?)",
-                "alex@example.com", "hashed_pw_1", "Alex", "alex1"
-        );
+        insertUser("alex@example.com","alex1");
 
         assertThrows(DataIntegrityViolationException.class, () -> {
-            jdbc.update(
-                    "INSERT INTO users (email, password_hash, name, username) VALUES (?, ?, ?, ?)",
-                    "alex@example.com", "hashed_pw_2", "Bob", "bob1"
-            );
+            insertUser("alex@example.com","bob1");
         });
     }
+
+
+
+
+
+
 
     private void insertUser(String email, String username) {
         jdbc.update("INSERT INTO users (email, password_hash, name, username) VALUES (?, ?, ?, ?)",
