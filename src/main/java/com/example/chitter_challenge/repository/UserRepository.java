@@ -4,7 +4,6 @@ import com.example.chitter_challenge.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,7 +15,8 @@ public class UserRepository {
         this.jdbc = jdbc;
     }
 
-    public void save(User user) {
+    public User save(User user) {
+
     }
 
     public Optional<User> findByUsername(String username) {
