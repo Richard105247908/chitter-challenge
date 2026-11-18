@@ -1,4 +1,4 @@
-package com.example.chitter_challenge;
+package com.example.chitter_challenge.model;
 
 public class User {
     private final Long id;

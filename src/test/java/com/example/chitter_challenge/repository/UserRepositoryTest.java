@@ -1,6 +1,6 @@
 package com.example.chitter_challenge.repository;
 
-import com.example.chitter_challenge.User;
+import com.example.chitter_challenge.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.test.autoconfigure.JdbcTest;
