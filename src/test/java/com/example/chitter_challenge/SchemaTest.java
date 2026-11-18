@@ -6,6 +6,8 @@ import org.springframework.boot.jdbc.test.autoconfigure.JdbcTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.time.OffsetDateTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -23,17 +25,29 @@ class SchemaTest {
 
     @Test
     void rejectsDuplicateEmail() {
-        insertUser("alex@example.com","alex1");
+        insertUser("alex@example.com", "alex1");
 
         assertThrows(DataIntegrityViolationException.class, () -> {
-            insertUser("alex@example.com","bob1");
+            insertUser("alex@example.com", "bob1");
         });
     }
 
+    @Test
+    void rejectsDuplicateUsername() {
+        insertUser("alex@example.com", "alex1");
 
+        assertThrows(DataIntegrityViolationException.class, () ->
+                insertUser("bob@example.com", "alex1"));
+    }
 
-
-
+    @Test
+    void rejectsPeepFromUnknownUser() {
+        assertThrows(DataIntegrityViolationException.class, () ->
+                jdbc.update(
+                        "INSERT INTO peeps (user_id, message, created_at) VALUES (?, ?, ?)",
+                        999L, "Hello world", OffsetDateTime.now()
+                ));
+    }
 
 
     private void insertUser(String email, String username) {
