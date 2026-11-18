@@ -28,4 +28,14 @@ public class UserRepositoryTest {
         assertEquals("alex@example.com", found.get().getEmail());
     }
 
+    @Test
+    void saveTwoUsersAndFindOneByUsername() {
+        repository.save(new User("alex@example.com", "hashed_pw", "Alex", "alex1"));
+        repository.save(new User("bob@example.com", "hashed_pw2", "Bob", "bob1"));
+        Optional<User> found = repository.findByUsername("bob1");
+
+        assertTrue(found.isPresent());
+        assertEquals("Bob", found.get().getName());
+    }
+
 }
