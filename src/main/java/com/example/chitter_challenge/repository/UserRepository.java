@@ -2,8 +2,11 @@ package com.example.chitter_challenge.repository;
 
 import com.example.chitter_challenge.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,10 +20,20 @@ public class UserRepository {
     }
 
     public User save(User user) {
-        jdbc.update("INSERT INTO users (email, password_hash, name, username) VALUES (?, ?, ?, ?)",
-                user.getEmail(), user.getPasswordHash(), user.getName(), user.getUsername()
-        );
-        return user;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbc.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO users (email, password_hash, name, username) VALUES (?, ?, ?, ?)",
+                    new String[]{"id"});
+            ps.setString(1, user.getEmail());
+            ps.setString(2, user.getPasswordHash());
+            ps.setString(3, user.getName());
+            ps.setString(4, user.getUsername());
+            return ps;
+        }, keyHolder);
+
+        Long id = keyHolder.getKey().longValue();
+        return new User(id, user.getEmail(), user.getPasswordHash(), user.getName(), user.getUsername());
     }
 
     public Optional<User> findByUsername(String username) {
