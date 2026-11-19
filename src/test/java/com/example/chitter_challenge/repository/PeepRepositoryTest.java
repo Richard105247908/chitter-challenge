@@ -33,6 +33,34 @@ public class PeepRepositoryTest {
         assertEquals("Alex", all.get(0).getAuthorName());
         assertEquals("alex1", all.get(0).getAuthorUsername());
 
+    }
+
+    @Test
+    void peepsFindAllNewestFirst (){
+        User author = users.save(new User("alex@example.com", "hashed_pw", "Alex", "alex1"));
+
+        peeps.save(author, "Middle peep", OffsetDateTime.parse("2026-11-19T11:00:00Z"));
+        peeps.save(author, "Newest peep", OffsetDateTime.parse("2026-11-19T12:00:00Z"));
+        peeps.save(author, "Oldest peep", OffsetDateTime.parse("2026-11-19T10:00:00Z"));
+
+        List<Peep> all = peeps.findAllNewestFirst();
+
+//        assertEquals(3, all.size());
+//        assertEquals("Newest peep",all.get(0));
+//        assertEquals("Middle peep",all.get(1));
+//        assertEquals("Oldest peep",all.get(0));
+
+        assertEquals(
+                List.of("Newest peep", "Middle peep", "Oldest peep"),
+                all.stream().map(Peep::getMessage).toList());
+
+
+
+
+
+
+
+
 
     }
 
