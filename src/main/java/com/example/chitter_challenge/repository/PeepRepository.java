@@ -3,8 +3,11 @@ package com.example.chitter_challenge.repository;
 import com.example.chitter_challenge.model.Peep;
 import com.example.chitter_challenge.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -17,7 +20,19 @@ public class PeepRepository {
     }
 
     public Peep save(User author, String message, OffsetDateTime createdAt) {
-        return null;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbc.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO peeps (user_id, message,created_at ) VALUES (?, ?, ?)",
+                    new String[]{"id"});
+            ps.setLong(1,author.getId() );
+            ps.setString(2, message);
+            ps.setObject(3, createdAt);
+            return ps;
+        }, keyHolder);
+
+        Long id = keyHolder.getKey().longValue();
+        return new Peep(id,message,createdAt, author.getName(), author.getUsername());
     }
 
     public List<Peep> findAllNewestFirst() {
