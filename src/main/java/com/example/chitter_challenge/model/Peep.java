@@ -10,5 +10,31 @@ public class Peep {
     private final String authorUsername;
 
 
+    public Peep(long id, String message, OffsetDateTime createdAt, String authorName, String authorUsername) {
+        this.id = id;
+        this.message = message;
+        this.createdAt = createdAt;
+        this.authorName = authorName;
+        this.authorUsername = authorUsername;
+    }
 
+    public long getId() {
+        return id;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public String getAuthorUsername() {
+        return authorUsername;
+    }
 }
