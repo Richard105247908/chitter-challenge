@@ -47,12 +47,16 @@ public class UserRepositoryTest {
     }
 
     @Test
-    void saveUserWithMadeFromDb(){
+    void savedUserHasTheGeneratedId(){
         User saved=repository.save(new User("alex@example.com", "hashed_pw", "Alex", "alex1"));
         Optional<User> found = repository.findByUsername("alex1");
         assertTrue(found.isPresent());
 
-        assertNotNull(saved.getId());
+        //assertNotNull(saved.getId());
+       // assertNotNull(saved.getEmail());
+       // assertNotNull(saved.getUsername());
+        assertEquals(found.get().getId(),saved.getId());
+
 
     }
 
