@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Import;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @JdbcTest
 @Import(UserRepository.class)
@@ -47,9 +47,12 @@ public class UserRepositoryTest {
     }
 
     @Test
-    void saveUserWithIdDbMade(){
-        repository.save(new User("alex@example.com", "hashed_pw", "Alex", "alex1"));
+    void saveUserWithMadeFromDb(){
+        User saved=repository.save(new User("alex@example.com", "hashed_pw", "Alex", "alex1"));
+        Optional<User> found = repository.findByUsername("alex1");
+        assertTrue(found.isPresent());
 
+        assertNotNull(saved.getId());
 
     }
 
