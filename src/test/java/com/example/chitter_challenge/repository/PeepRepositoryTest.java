@@ -1,5 +1,6 @@
 package com.example.chitter_challenge.repository;
 
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.test.autoconfigure.JdbcTest;
 import org.springframework.context.annotation.Import;
@@ -8,7 +9,13 @@ import org.springframework.context.annotation.Import;
 @Import(PeepRepository.class)
 
 public class PeepRepositoryTest {
+
+    @Autowired
+    UserRepository userRepository;
     @Autowired
     PeepRepository peepRepository;
+
+    @Test
+    void
 
 }
