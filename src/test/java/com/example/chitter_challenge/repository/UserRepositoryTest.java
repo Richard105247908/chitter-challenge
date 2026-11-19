@@ -46,4 +46,11 @@ public class UserRepositoryTest {
         assertTrue(found.isEmpty());
     }
 
+    @Test
+    void saveUserWithIdDbMade(){
+        repository.save(new User("alex@example.com", "hashed_pw", "Alex", "alex1"));
+
+
+    }
+
 }

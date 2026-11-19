@@ -20,6 +20,7 @@ public class UserRepository {
         jdbc.update("INSERT INTO users (email, password_hash, name, username) VALUES (?, ?, ?, ?)",
                 user.getEmail(), user.getPasswordHash(), user.getName(), user.getUsername()
         );
+        return user;
     }
 
     public Optional<User> findByUsername(String username) {
