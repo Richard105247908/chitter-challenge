@@ -1,5 +1,6 @@
 package com.example.chitter_challenge.repository;
 
+import com.example.chitter_challenge.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.test.autoconfigure.JdbcTest;
@@ -11,11 +12,13 @@ import org.springframework.context.annotation.Import;
 public class PeepRepositoryTest {
 
     @Autowired
-    UserRepository userRepository;
+    UserRepository users;
     @Autowired
-    PeepRepository peepRepository;
+    PeepRepository peeps;
 
     @Test
-    void
+    void savedPeepComesBackWithItsAuthorsNameAndUsername() {
+        User alex=
+    }
 
 }
