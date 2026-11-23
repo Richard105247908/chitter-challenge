@@ -77,7 +77,7 @@ public class PeepRepositoryTest {
         assertEquals("alex1", saved.getAuthorUsername());
         assertTrue(createdAt.isEqual(saved.getCreatedAt()));
 
-        assertEquals("Hello World", saved2.getMessage());
+        assertEquals("Hello Universe", saved2.getMessage());
         assertEquals("Alex", saved2.getAuthorName());
         assertEquals("alex1", saved2.getAuthorUsername());
     }
