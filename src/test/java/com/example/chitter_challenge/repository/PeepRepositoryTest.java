@@ -7,10 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.test.autoconfigure.JdbcTest;
 import org.springframework.context.annotation.Import;
 
+import java.security.MessageDigest;
+import java.sql.Time;
 import java.time.OffsetDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @JdbcTest
 @Import({UserRepository.class, PeepRepository.class})
@@ -36,7 +39,7 @@ public class PeepRepositoryTest {
     }
 
     @Test
-    void peepsFindAllNewestFirst (){
+    void peepsFindAllNewestFirst() {
         User author = users.save(new User("alex@example.com", "hashed_pw", "Alex", "alex1"));
 
         peeps.save(author, "Middle peep", OffsetDateTime.parse("2026-11-19T11:00:00Z"));
@@ -45,23 +48,34 @@ public class PeepRepositoryTest {
 
         List<Peep> all = peeps.findAllNewestFirst();
 
-//        assertEquals(3, all.size());
-//        assertEquals("Newest peep",all.get(0));
-//        assertEquals("Middle peep",all.get(1));
-//        assertEquals("Oldest peep",all.get(0));
+        assertEquals(3, all.size());
+        assertEquals("Newest peep", all.get(0));
+        assertEquals("Middle peep", all.get(1));
+        assertEquals("Oldest peep", all.get(0));
 
         assertEquals(
                 List.of("Newest peep", "Middle peep", "Oldest peep"),
                 all.stream().map(Peep::getMessage).toList());
+    }
 
+    @Test
+    void savedPeepIsReturnedWithItsGeneratedId() {
+        OffsetDateTime createdAt = OffsetDateTime.parse("2026-11-19T10:00:00Z");
+        OffsetDateTime createdAt2 = OffsetDateTime.parse("2026-11-19T11:00:00Z");
 
+        User alex = users.save(new User("alex@example.com", "hashed_pw", "Alex", "alex1"));
+        Peep saved = peeps.save(alex, "Hello World", createdAt);
+        Peep saved2 = peeps.save(alex, "Hello Universe", createdAt2);
 
+        List<Peep> loaded = peeps.findAllNewestFirst();
 
+        assertEquals(loaded.get(1).getId(), saved.getId());
+        assertEquals(loaded.get(0).getId(), saved2.getId());
 
-
-
-
-
+        assertEquals("Hello World", saved.getMessage());
+        assertEquals("Alex", saved.getAuthorName());
+        assertEquals("alex1", saved.getAuthorUsername());
+        assertTrue(createdAt.isEqual(saved.getCreatedAt()));
     }
 
 }

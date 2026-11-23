@@ -54,11 +54,11 @@ public class UserRepositoryTest {
         Optional<User> found = repository.findByUsername("alex1");
         Optional<User> found2 = repository.findByUsername("bob1");
 
-        //assertTrue(found.isPresent());
+        assertTrue(found.isPresent());
 
-       // assertNotNull(saved.getId());
-        // assertNotNull(saved.getEmail());
-        // assertNotNull(saved.getUsername());
+        assertNotNull(saved.getId());
+         assertNotNull(saved.getEmail());
+         assertNotNull(saved.getUsername());
         assertEquals(found2.get().getId(), saved2.getId());
 
 
