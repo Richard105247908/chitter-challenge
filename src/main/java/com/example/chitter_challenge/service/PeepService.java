@@ -1,5 +1,6 @@
 package com.example.chitter_challenge.service;
 
+import com.example.chitter_challenge.model.User;
 import com.example.chitter_challenge.repository.PeepRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,10 @@ public class PeepService {
     public PeepService(PeepRepository peepRepository, Clock clock){
         this.peepRepository=peepRepository;
         this.clock=clock;
+
+    }
+
+    public void post(User author, String message){
 
     }
 }
