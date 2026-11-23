@@ -8,7 +8,7 @@ public class UserService {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
 
-    protected UserService(UserRepository userRepository,PasswordEncoder passwordEncoder,User signUp){
+    protected UserService(UserRepository userRepository,PasswordEncoder passwordEncoder){
         this.userRepository=userRepository;
         this.passwordEncoder=passwordEncoder;
 
