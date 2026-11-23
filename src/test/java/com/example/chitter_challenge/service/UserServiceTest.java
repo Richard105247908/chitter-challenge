@@ -11,6 +11,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
+
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
@@ -30,6 +34,13 @@ public class UserServiceTest {
         service.signUp("alex@example.com", "password123", "Alex", "alex1");
 
         ArgumentCaptor<User> captor=ArgumentCaptor.forClass(User.class);
+        verify(users).save(captor.capture());
+        User saved = captor.getValue();
+
+        assertNotEquals("password123", saved.getPasswordHash());
+        assertTrue(encoder.matches("password123", saved.getPasswordHash()));
+
+
 
 
 
