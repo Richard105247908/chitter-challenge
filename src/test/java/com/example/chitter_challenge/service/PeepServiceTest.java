@@ -16,10 +16,10 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class PeepServiceTest {
@@ -51,10 +51,13 @@ public class PeepServiceTest {
 
         assertThrows(InvalidPeepException.class, () -> service.post(alex, invalidMessage));
         verifyNoInteractions(peeps);
+
+        InvalidPeepException e = assertThrows(InvalidPeepException.class, () -> service.post(alex, invalidMessage));
+        assertEquals("Peeps must be 1 to 200 characters", e.getMessage());
     }
 
     @Test
-    void accepts200Characters(){
+    void acceptsAMessageOfExactlyTheMaximumLength(){
 
         String maxMessage= "a".repeat(200);
         service.post(alex,maxMessage);
@@ -62,14 +65,12 @@ public class PeepServiceTest {
     }
 
     @Test
-    void rejects201Characters(){
+    void rejectsAMessageOneCharacterOverTheMaximum(){
         String tooLongMessage= "a".repeat(201);
         assertThrows(InvalidPeepException.class, () ->
                 service.post(alex,tooLongMessage));
 
         verifyNoInteractions(peeps);
-
-
     }
 
 

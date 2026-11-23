@@ -12,6 +12,7 @@ import java.time.OffsetDateTime;
 public class PeepService {
     private final PeepRepository peepRepository;
     private final Clock clock;
+    private static final int MAX_LENGTH=200;
 
     public PeepService(PeepRepository peepRepository, Clock clock) {
         this.peepRepository = peepRepository;
@@ -21,14 +22,9 @@ public class PeepService {
 
     public void post(User author, String message) {
 
-        if (message == null || message.isBlank()){
-            throw new InvalidPeepException("stop");
+        if (message == null || message.isBlank()|| message.length()>MAX_LENGTH){
+            throw new InvalidPeepException("Peeps must be 1 to " +MAX_LENGTH + " characters");
         }
-
-        if (message.length() > 200) {
-            throw new InvalidPeepException("Peeps must be 1 to 200 characters");
-        }
-
         peepRepository.save(author, message, OffsetDateTime.now(clock));
     }
 }
