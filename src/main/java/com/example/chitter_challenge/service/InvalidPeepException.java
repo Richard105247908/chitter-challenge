@@ -1,4 +1,7 @@
 package com.example.chitter_challenge.service;
 
-public class InvalidPeepException {
+public class InvalidPeepException extends RuntimeException{
+    public InvalidPeepException(String message) {
+        super(message);
+    }
 }

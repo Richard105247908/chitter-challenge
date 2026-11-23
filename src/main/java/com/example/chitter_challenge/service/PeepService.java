@@ -23,6 +23,9 @@ public class PeepService {
         if (message == null || message.isBlank()){
             throw new IllegalArgumentException("Message must not be blank");
         }
+        if (message.length()>200){
+
+        }
         peepRepository.save(author, message, OffsetDateTime.now(clock));
     }
 }
