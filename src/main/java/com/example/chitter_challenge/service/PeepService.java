@@ -25,6 +25,10 @@ public class PeepService {
             throw new InvalidPeepException("stop");
         }
 
+        if (message.length() > 200) {
+            throw new InvalidPeepException("Peeps must be 1 to 200 characters");
+        }
+
         peepRepository.save(author, message, OffsetDateTime.now(clock));
     }
 }

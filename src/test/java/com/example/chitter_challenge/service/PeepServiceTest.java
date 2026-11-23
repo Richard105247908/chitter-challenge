@@ -59,6 +59,16 @@ public class PeepServiceTest {
         String maxMessage= "a".repeat(200);
         service.post(alex,maxMessage);
         verify(peeps).save(alex,maxMessage,OffsetDateTime.parse("2026-11-19T10:00:00Z"));
+    }
+
+    @Test
+    void rejects201Characters(){
+        String tooLongMessage= "a".repeat(201);
+        assertThrows(InvalidPeepException.class, () ->
+                service.post(alex,tooLongMessage));
+
+        verifyNoInteractions(peeps);
+
 
     }
 
