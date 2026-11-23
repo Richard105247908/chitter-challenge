@@ -1,5 +1,6 @@
 package com.example.chitter_challenge.service;
 
+import com.example.chitter_challenge.model.Peep;
 import com.example.chitter_challenge.model.User;
 import com.example.chitter_challenge.repository.PeepRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,11 +16,11 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PeepServiceTest {
@@ -74,4 +75,17 @@ public class PeepServiceTest {
 
         verifyNoInteractions(peeps);
     }
+
+    @Test
+    void streamReturnsPeepsInTheOrderTheRepositoryGivesThem() {
+        Peep second = new Peep(2L, "Second", OffsetDateTime.parse("2026-11-19T10:00:00Z"), "Alex", "alex1");
+        Peep first = new Peep(1L, "First", OffsetDateTime.parse("2026-11-19T11:00:00Z"), "Alex", "alex1");
+
+        List<Peep> expected = List.of(second, first);
+
+        when(peeps.findAllNewestFirst()).thenReturn(expected);
+        assertEquals(expected, service.getStream());
+    }
+
+
 }

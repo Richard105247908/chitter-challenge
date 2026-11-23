@@ -1,5 +1,6 @@
 package com.example.chitter_challenge.service;
 
+import com.example.chitter_challenge.model.Peep;
 import com.example.chitter_challenge.model.User;
 import com.example.chitter_challenge.repository.PeepRepository;
 import org.springframework.stereotype.Service;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.time.Clock;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Service
 public class PeepService {
@@ -26,5 +28,10 @@ public class PeepService {
             throw new InvalidPeepException("Peeps must be 1 to " +MAX_LENGTH + " characters");
         }
         peepRepository.save(author, message, OffsetDateTime.now(clock));
+    }
+
+    public List<Peep> getStream(){
+        return peepRepository.findAllNewestFirst();
+
     }
 }
