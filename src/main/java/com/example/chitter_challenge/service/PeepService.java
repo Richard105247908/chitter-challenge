@@ -5,6 +5,8 @@ import com.example.chitter_challenge.repository.PeepRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 
 @Service
 public class PeepService {
@@ -18,6 +20,7 @@ public class PeepService {
     }
 
     public void post(User author, String message){
+        peepRepository.save(author,message, OffsetDateTime.now(clock));
 
     }
 }
