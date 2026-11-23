@@ -2,6 +2,7 @@ package com.example.chitter_challenge.service;
 
 import com.example.chitter_challenge.model.User;
 import com.example.chitter_challenge.repository.PeepRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,29 +25,31 @@ import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 public class PeepServiceTest {
     @Mock
     PeepRepository peeps;
-    @Mock
-    Clock clock;
 
-    @Mock
-    PeepService service;
+    private Clock clock;
+    private PeepService service;
+    private User alex;
+
+    @BeforeEach
+    void setup() {
+        clock = Clock.fixed(Instant.parse("2026-11-19T10:00:00Z"), ZoneOffset.UTC);
+        service = new PeepService(peeps, clock);
+        alex = new User(1L, "alex@example.com", "hashed_pw", "Alex", "alex1");
+
+    }
 
     @Test
     void postStampsThePeepWithTheCurrentTime() {
-        Clock clock = Clock.fixed(Instant.parse("2026-11-19T10:00:00Z"), ZoneOffset.UTC);
-        PeepService service = new PeepService(peeps, clock);
 
-        User alex = new User(1L, "alex@example.com", "hashed_pw", "Alex", "alex1");
 
         service.post(alex, "Hello world");
         verify(peeps).save(alex, "Hello world", OffsetDateTime.parse("2026-11-19T10:00:00Z"));
     }
+
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"   ", "\t"})
     void rejectsBlankOrNullMessages(String invalidMessage) {
-        Clock clock = Clock.fixed(Instant.parse("2026-11-19T10:00:00Z"), ZoneOffset.UTC);
-        PeepService service = new PeepService(peeps, clock);
-        User alex = new User(1L, "alex@example.com", "hashed_pw", "Alex", "alex1");
 
         assertThrows(InvalidPeepException.class, () -> service.post(alex, invalidMessage));
         verifyNoInteractions(peeps);
