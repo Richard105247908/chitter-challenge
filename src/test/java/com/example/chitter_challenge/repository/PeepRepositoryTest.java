@@ -2,7 +2,10 @@ package com.example.chitter_challenge.repository;
 
 import com.example.chitter_challenge.model.Peep;
 import com.example.chitter_challenge.model.User;
+import com.example.chitter_challenge.service.InvalidPeepException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.test.autoconfigure.JdbcTest;
 import org.springframework.context.annotation.Import;
@@ -12,8 +15,7 @@ import java.sql.Time;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @JdbcTest
 @Import({UserRepository.class, PeepRepository.class})

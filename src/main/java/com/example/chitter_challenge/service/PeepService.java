@@ -20,12 +20,11 @@ public class PeepService {
     }
 
     public void post(User author, String message) {
-        if (message == null || message.isBlank()){
-            throw new IllegalArgumentException("Message must not be blank");
-        }
-        if (message.length()>200){
 
+        if (message == null || message.isBlank()){
+            throw new InvalidPeepException("stop");
         }
+
         peepRepository.save(author, message, OffsetDateTime.now(clock));
     }
 }
