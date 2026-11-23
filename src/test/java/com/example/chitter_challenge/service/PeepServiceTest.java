@@ -21,13 +21,13 @@ public class PeepServiceTest {
     PeepRepository peeps;
 
     @Test
-    void postStampsThePeepWithTheCurrentTime(){
-        Clock clock=Clock.fixed(Instant.parse("2026-11-19T10:00:00Z"), ZoneOffset.UTC);
-        PeepService service= new PeepService(peeps,clock);
+    void postStampsThePeepWithTheCurrentTime() {
+        Clock clock = Clock.fixed(Instant.parse("2026-11-19T10:00:00Z"), ZoneOffset.UTC);
+        PeepService service = new PeepService(peeps, clock);
 
-        User alex = new User(1L,"alex@example.com", "hashed_pw", "Alex", "alex1");
+        User alex = new User(1L, "alex@example.com", "hashed_pw", "Alex", "alex1");
 
-        service.post(alex,"Hello world");
+        service.post(alex, "Hello world");
         verify(peeps).save(alex, "Hello world", OffsetDateTime.parse("2026-11-19T10:00:00Z"));
     }
 

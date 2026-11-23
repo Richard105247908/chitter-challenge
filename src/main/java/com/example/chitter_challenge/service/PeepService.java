@@ -13,14 +13,13 @@ public class PeepService {
     private final PeepRepository peepRepository;
     private final Clock clock;
 
-    public PeepService(PeepRepository peepRepository, Clock clock){
-        this.peepRepository=peepRepository;
-        this.clock=clock;
+    public PeepService(PeepRepository peepRepository, Clock clock) {
+        this.peepRepository = peepRepository;
+        this.clock = clock;
 
     }
 
-    public void post(User author, String message){
-        peepRepository.save(author,message, OffsetDateTime.now(clock));
-
+    public void post(User author, String message) {
+        peepRepository.save(author, message, OffsetDateTime.now(clock));
     }
 }
