@@ -9,4 +9,8 @@ import java.time.Clock;
 public class PeepService {
     private final PeepRepository peepRepository;
     private final Clock clock;
+
+    public PeepService(PeepRepository peepRepository, Clock clock){
+
+    }
 }
