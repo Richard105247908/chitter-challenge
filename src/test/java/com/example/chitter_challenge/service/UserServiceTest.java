@@ -1,9 +1,11 @@
 package com.example.chitter_challenge.service;
 
+import com.example.chitter_challenge.model.User;
 import com.example.chitter_challenge.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,6 +27,11 @@ public class UserServiceTest {
 
     @Test
     void signUpStoresAHashedPasswordNotThePlainOne(){
+        service.signUp("alex@example.com", "password123", "Alex", "alex1");
+
+        ArgumentCaptor<User> captor=ArgumentCaptor.forClass(User.class);
+
+
 
     }
 

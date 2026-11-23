@@ -11,10 +11,9 @@ public class UserService {
     protected UserService(UserRepository userRepository,PasswordEncoder passwordEncoder){
         this.userRepository=userRepository;
         this.passwordEncoder=passwordEncoder;
-
     }
 
-    public void signUp(String email, PasswordEncoder passwordEncoder,String name, String username){
+    public void signUp(String email, String passwordEncoder,String name, String username){
 
     }
 }
