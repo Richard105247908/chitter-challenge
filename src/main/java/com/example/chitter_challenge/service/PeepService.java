@@ -11,6 +11,8 @@ public class PeepService {
     private final Clock clock;
 
     public PeepService(PeepRepository peepRepository, Clock clock){
+        this.peepRepository=peepRepository;
+        this.clock=clock;
 
     }
 }
