@@ -54,25 +54,24 @@ public class PeepServiceTest {
 
         InvalidPeepException e = assertThrows(InvalidPeepException.class, () -> service.post(alex, invalidMessage));
         assertEquals("Peeps must be 1 to 200 characters", e.getMessage());
+        verifyNoInteractions(peeps);
+
     }
 
     @Test
-    void acceptsAMessageOfExactlyTheMaximumLength(){
+    void acceptsAMessageOfExactlyTheMaximumLength() {
 
-        String maxMessage= "a".repeat(200);
-        service.post(alex,maxMessage);
-        verify(peeps).save(alex,maxMessage,OffsetDateTime.parse("2026-11-19T10:00:00Z"));
+        String maxMessage = "a".repeat(200);
+        service.post(alex, maxMessage);
+        verify(peeps).save(alex, maxMessage, OffsetDateTime.parse("2026-11-19T10:00:00Z"));
     }
 
     @Test
-    void rejectsAMessageOneCharacterOverTheMaximum(){
-        String tooLongMessage= "a".repeat(201);
+    void rejectsAMessageOneCharacterOverTheMaximum() {
+        String tooLongMessage = "a".repeat(201);
         assertThrows(InvalidPeepException.class, () ->
-                service.post(alex,tooLongMessage));
+                service.post(alex, tooLongMessage));
 
         verifyNoInteractions(peeps);
     }
-
-
-
 }
