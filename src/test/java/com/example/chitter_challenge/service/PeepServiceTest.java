@@ -35,12 +35,10 @@ public class PeepServiceTest {
         clock = Clock.fixed(Instant.parse("2026-11-19T10:00:00Z"), ZoneOffset.UTC);
         service = new PeepService(peeps, clock);
         alex = new User(1L, "alex@example.com", "hashed_pw", "Alex", "alex1");
-
     }
 
     @Test
     void postStampsThePeepWithTheCurrentTime() {
-
 
         service.post(alex, "Hello world");
         verify(peeps).save(alex, "Hello world", OffsetDateTime.parse("2026-11-19T10:00:00Z"));
@@ -54,5 +52,16 @@ public class PeepServiceTest {
         assertThrows(InvalidPeepException.class, () -> service.post(alex, invalidMessage));
         verifyNoInteractions(peeps);
     }
+
+    @Test
+    void accepts200Characters(){
+
+        String maxMessage= "a".repeat(200);
+        service.post(alex,maxMessage);
+        verify(peeps).save(alex,maxMessage,OffsetDateTime.parse("2026-11-19T10:00:00Z"));
+
+    }
+
+
 
 }
