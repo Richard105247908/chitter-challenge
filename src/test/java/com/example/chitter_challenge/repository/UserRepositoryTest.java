@@ -48,8 +48,8 @@ public class UserRepositoryTest {
 
     @Test
     void savedUserHasTheGeneratedId() {
-        User saved = repository.save(new User(1L,"alex@example.com", "hashed_pw", "Alex", "alex1"));
-       User saved2= repository.save(new User("bob@example.com", "hashed_pw2", "Bob", "bob1"));
+        User saved = repository.save(new User(1L, "alex@example.com", "hashed_pw", "Alex", "alex1"));
+        User saved2 = repository.save(new User("bob@example.com", "hashed_pw2", "Bob", "bob1"));
 
         Optional<User> found = repository.findByUsername("alex1");
         Optional<User> found2 = repository.findByUsername("bob1");
@@ -57,8 +57,8 @@ public class UserRepositoryTest {
         assertTrue(found.isPresent());
 
         assertNotNull(saved.getId());
-         assertNotNull(saved.getEmail());
-         assertNotNull(saved.getUsername());
+        assertNotNull(saved.getEmail());
+        assertNotNull(saved.getUsername());
         assertEquals(found2.get().getId(), saved2.getId());
     }
 
@@ -68,7 +68,25 @@ public class UserRepositoryTest {
         Optional<User> found = repository.findByEmail("alex@example.com");
 
         assertTrue(found.isPresent());
-       //assertEquals("Alex", found.get().getName());
+        assertEquals("Alex", found.get().getName());
         assertEquals("alex@example.com", found.get().getEmail());
+    }
+
+    @Test
+    void returnEmptyWhenEmailNotFound(){
+        repository.save(new User("alex@example.com", "hashed_pw", "Alex", "alex1"));
+        Optional<User> found = repository.findByEmail("nobody@example.com");
+        assertTrue(found.isEmpty());
+
+    }
+
+    @Test
+    void findsTheRightUserWhenSeveralExistusingEmail() {
+        repository.save(new User("sam@example.com", "hashed_pw", "Alex", "alex12"));
+        repository.save(new User("alex@example.com", "hashed_pw", "Alex", "alex1"));
+        Optional<User> users = repository.findByEmail("alex@example.com");
+
+        assertTrue(users.isPresent());
+        assertEquals("alex1", users.get().getUsername());
     }
 }

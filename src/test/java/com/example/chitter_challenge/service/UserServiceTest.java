@@ -56,4 +56,10 @@ public class UserServiceTest {
         assertEquals("That username is already taken", e.getMessage());
         verify(users, never()).save(any());
     }
+
+    @Test
+    void signUpRejectedATakenEmailWithoutSaving() {
+
+
+    }
 }
