@@ -1,6 +1,7 @@
 package com.example.chitter_challenge.controller;
 
 import com.example.chitter_challenge.service.PeepService;
+import com.example.chitter_challenge.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,10 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PeepController {
     private final PeepService peepService;
+    private final UserService userService;
     public static final String SESSION_USERNAME = "username";
 
-    public PeepController(PeepService peepService) {
+    public PeepController(PeepService peepService, UserService userService) {
         this.peepService = peepService;
+        this.userService = userService;
     }
 
     @GetMapping("/peeps")
