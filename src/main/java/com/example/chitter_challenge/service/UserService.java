@@ -14,6 +14,10 @@ public class UserService {
     }
 
     public User signUp(String email, String password, String name, String username) {
+
+        if (users.findByUsername(username).isPresent()) {
+            throw new DuplicateUserException("That username is already taken");
+        }
         String hashedPassword = passwordEncoder.encode(password);
         User passwordUser;
         passwordUser = new User(email, hashedPassword, name, username);
