@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chitter</title>
+</head>
+<body>
+<main>
+    <h1>Chitter</h1>
+    <article th:each="peep : ${peeps}">
+        <p th:text="|${peep.authorName} (@${peep.authorUsername})|">Author (@username)</p>
+        <p th:text="${peep.message}">Peep message</p>
+        <time th:text="${peep.createdAt}">2026-11-19T11:00:00Z</time>
+    </article>
+</main>
+</body>
+</html>
