@@ -44,4 +44,13 @@ class PeepControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/sessions/new"));
     }
+
+
+    @Test
+    void showsNewPeepFormWhenLoggedIn() throws Exception {
+        mockMvc.perform(get("/peeps/new").sessionAttr(PeepController.SESSION_USERNAME, "alex1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("peeps/new"))
+                .andExpect(content().string(containsString("name=\"message\"")));
+    }
 }
