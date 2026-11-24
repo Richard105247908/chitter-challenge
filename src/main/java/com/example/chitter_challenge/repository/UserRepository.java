@@ -48,6 +48,9 @@ public class UserRepository {
         );
         return users.stream().findFirst();
     }
+    public Optional<User> findByEmail(String email) {
+        return null;
+    }
 }
 
 
