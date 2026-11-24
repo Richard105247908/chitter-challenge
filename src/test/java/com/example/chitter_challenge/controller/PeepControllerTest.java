@@ -7,6 +7,7 @@ import com.example.chitter_challenge.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -84,4 +86,19 @@ class PeepControllerTest {
         verifyNoInteractions(userService, peepService);
     }
 
+    @Test
+    void postPeepInvalidatesSessionAndRedirectsWhenUserDoesNotExist() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute(PeepController.SESSION_USERNAME, "ghost");
+
+        when(userService.findByUsername("ghost")).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/peeps").session(session).param("message", "Hello"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/sessions/new"));
+
+        verify(userService).findByUsername("ghost");
+        assertTrue(session.isInvalid());
+        verifyNoInteractions(peepService);
+    }
 }
