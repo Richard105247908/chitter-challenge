@@ -48,8 +48,20 @@ public class UserRepository {
         );
         return users.stream().findFirst();
     }
+
     public Optional<User> findByEmail(String email) {
-        return null;
+        List<User> users = jdbc.query(
+                "SELECT id, email, password_hash, name, username FROM users WHERE email = ?",
+                (rs, rowNum) -> new User(
+                        rs.getLong("id"),
+                        rs.getString("email"),
+                        rs.getString("password_hash"),
+                        rs.getString("name"),
+                        rs.getString("username")
+                ),
+                email
+        );
+        return users.stream().findFirst();
     }
 }
 

@@ -60,12 +60,15 @@ public class UserRepositoryTest {
          assertNotNull(saved.getEmail());
          assertNotNull(saved.getUsername());
         assertEquals(found2.get().getId(), saved2.getId());
-
-
     }
+
     @Test
     void saveUserAndFindThemByEmail() {
+        repository.save(new User("alex@example.com", "hashed_pw", "Alex", "alex1"));
+        Optional<User> found = repository.findByEmail("alex@example.com");
 
-
+        assertTrue(found.isPresent());
+       //assertEquals("Alex", found.get().getName());
+        assertEquals("alex@example.com", found.get().getEmail());
     }
 }
