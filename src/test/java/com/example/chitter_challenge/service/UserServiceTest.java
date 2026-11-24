@@ -23,12 +23,12 @@ public class UserServiceTest {
     @Mock
     UserRepository users;
 
-    PasswordEncoder encoder= new BCryptPasswordEncoder();
+    PasswordEncoder encoder = new BCryptPasswordEncoder();
     UserService service;
 
     @BeforeEach
     void setUp() {
-        service= new UserService(users,encoder);
+        service = new UserService(users, encoder);
     }
 
     @Test
@@ -45,6 +45,7 @@ public class UserServiceTest {
         assertEquals("Alex", saved.getName());
         assertEquals("alex1", saved.getUsername());
     }
+
     @Test
     void signUpRejectsATakenUsernameWithoutSaving() {
         User existing = new User(1L, "other@example.com", "hash", "Other", "alex1");
