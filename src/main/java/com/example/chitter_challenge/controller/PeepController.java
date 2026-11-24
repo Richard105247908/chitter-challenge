@@ -38,6 +38,9 @@ public class PeepController {
     @PostMapping("/peeps")
     public String create(@RequestParam String message, HttpSession session) {
         String username = (String) session.getAttribute(SESSION_USERNAME);
+        if (username==null){
+            return "redirect:/sessions/new";
+        }
         User user = userService.findByUsername(username).get();
         peepService.post(user, message);
         return "redirect:/peeps";
