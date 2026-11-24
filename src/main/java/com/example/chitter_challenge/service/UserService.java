@@ -28,16 +28,16 @@ public class UserService {
 
         String hashedPassword = passwordEncoder.encode(password);
         User newUser = new User(email, hashedPassword, name, username);
-        try{
-           return  users.save(newUser);
-        }catch (DataIntegrityViolationException e){
+        try {
+            return users.save(newUser);
+        } catch (DataIntegrityViolationException e) {
             throw new DuplicateUserException("That username or email is already in use");
         }
     }
-    public Optional<User> findByUsername(String username){
+
+    public Optional<User> findByUsername(String username) {
 
         return users.findByUsername(username);
-
     }
 
 }

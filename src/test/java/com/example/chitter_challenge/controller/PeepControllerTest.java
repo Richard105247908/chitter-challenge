@@ -46,6 +46,7 @@ class PeepControllerTest {
                 .andExpect(content().string(containsString("Alex (@alex1)")))
                 .andExpect(content().string(containsString("Second peep")));
     }
+
     @Test
     void newPeepFormRedirectsToLoginWhenNotLoggedIn() throws Exception {
         mockMvc.perform(get("/peeps/new"))
@@ -63,11 +64,11 @@ class PeepControllerTest {
     }
 
     @Test
-    void xx() throws Exception {
-        User alex= new User(1L, "alex@example.com", "hash", "Alex", "alex1");
+    void postsAPeepAndRedirectsToTheStreamWhenLoggedIn() throws Exception {
+        User alex = new User(1L, "alex@example.com", "hash", "Alex", "alex1");
         when(userService.findByUsername("alex1")).thenReturn(Optional.of(alex));
 
-        mockMvc.perform(post("/peeps").sessionAttr(PeepController.SESSION_USERNAME,"alex1").param("message", "Hello"))
+        mockMvc.perform(post("/peeps").sessionAttr(PeepController.SESSION_USERNAME, "alex1").param("message", "Hello"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/peeps"));
 
