@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -68,6 +69,14 @@ public class UserServiceTest {
 
         assertEquals("That email is already taken", e.getMessage());
         verify(users, never()).save(any());
+    }
+    @Test
+    void raceSignUpDataIntegrityDuplicateUserException() {
+        when(users.save(any())).thenThrow(new DataIntegrityViolationException("duplicate key"));
 
+        DuplicateUserException e = assertThrows(DuplicateUserException.class,
+                () -> service.signUp("alex@example.com", "password123", "Alex", "alex1"));
+
+        assertEquals("That username or email is already in use", e.getMessage());
     }
 }

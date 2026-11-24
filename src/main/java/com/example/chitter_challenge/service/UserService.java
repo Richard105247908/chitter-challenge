@@ -2,6 +2,7 @@ package com.example.chitter_challenge.service;
 
 import com.example.chitter_challenge.model.User;
 import com.example.chitter_challenge.repository.UserRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class UserService {
@@ -24,10 +25,12 @@ public class UserService {
         }
 
         String hashedPassword = passwordEncoder.encode(password);
-        User passwordUser;
-        passwordUser = new User(email, hashedPassword, name, username);
-        users.save(passwordUser);
-        return null;
+        User newUser = new User(email, hashedPassword, name, username);
+        try{
+           return  users.save(newUser);
+        }catch (DataIntegrityViolationException e){
+            throw new DuplicateUserException("That username or email is already in use");
+        }
     }
 
 }
