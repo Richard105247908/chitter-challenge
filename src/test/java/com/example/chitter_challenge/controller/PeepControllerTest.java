@@ -2,6 +2,7 @@ package com.example.chitter_challenge.controller;
 
 import com.example.chitter_challenge.model.Peep;
 import com.example.chitter_challenge.service.PeepService;
+import com.example.chitter_challenge.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -24,6 +25,9 @@ class PeepControllerTest {
 
     @MockitoBean
     PeepService peepService;
+
+    @MockitoBean
+    UserService userService;
 
     @Test
     void showsThePeepStreamWithAuthorAndMessage() throws Exception {
