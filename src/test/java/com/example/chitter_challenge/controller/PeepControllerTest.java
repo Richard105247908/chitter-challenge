@@ -38,4 +38,10 @@ class PeepControllerTest {
                 .andExpect(content().string(containsString("Alex (@alex1)")))
                 .andExpect(content().string(containsString("Second peep")));
     }
+    @Test
+    void newPeepFormRedirectsToLoginWhenNotLoggedIn() throws Exception {
+        mockMvc.perform(get("/peeps/new"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/sessions/new"));
+    }
 }
