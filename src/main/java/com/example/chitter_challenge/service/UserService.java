@@ -32,5 +32,8 @@ public class UserService {
             throw new DuplicateUserException("That username or email is already in use");
         }
     }
+    public void findByUsername(String username){
+
+    }
 
 }
