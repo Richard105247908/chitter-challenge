@@ -73,7 +73,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    void returnEmptyWhenEmailNotFound(){
+    void returnEmptyWhenEmailNotFound() {
         repository.save(new User("alex@example.com", "hashed_pw", "Alex", "alex1"));
         Optional<User> found = repository.findByEmail("nobody@example.com");
         assertTrue(found.isEmpty());
@@ -81,12 +81,12 @@ public class UserRepositoryTest {
     }
 
     @Test
-    void findsTheRightUserWhenSeveralExistusingEmail() {
+    void findsTheRightUserByEmailWhenSeveralExist() {
         repository.save(new User("sam@example.com", "hashed_pw", "Alex", "alex12"));
         repository.save(new User("alex@example.com", "hashed_pw", "Alex", "alex1"));
-        Optional<User> users = repository.findByEmail("alex@example.com");
+        Optional<User> found = repository.findByEmail("alex@example.com");
 
-        assertTrue(users.isPresent());
-        assertEquals("alex1", users.get().getUsername());
+        assertTrue(found.isPresent());
+        assertEquals("alex1", found.get().getUsername());
     }
 }

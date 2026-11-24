@@ -59,7 +59,14 @@ public class UserServiceTest {
 
     @Test
     void signUpRejectedATakenEmailWithoutSaving() {
+        User existing = new User(1L, "other@example.com", "hash", "Other", "alex1");
+        when(users.findByEmail("other@example.com")).thenReturn(Optional.of(existing));
 
+        DuplicateUserException e = assertThrows(DuplicateUserException.class,
+                () -> service.signUp("other@example.com", "password123", "Alex", "alex1"));
+
+        assertEquals("That email is already taken", e.getMessage());
+        verify(users, never()).save(any());
 
     }
 }

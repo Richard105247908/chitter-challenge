@@ -19,6 +19,10 @@ public class UserService {
             throw new DuplicateUserException("That username is already taken");
         }
 
+        if (users.findByEmail(email).isPresent()) {
+            throw new DuplicateUserException("That email is already taken");
+        }
+
         String hashedPassword = passwordEncoder.encode(password);
         User passwordUser;
         passwordUser = new User(email, hashedPassword, name, username);
