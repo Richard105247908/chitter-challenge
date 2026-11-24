@@ -73,6 +73,7 @@ class PeepControllerTest {
 
         verify(peepService).post(alex, "Hello");
     }
+
     @Test
     void postPeepRedirectsToLoginWhenNotLoggedIn() throws Exception {
 
@@ -80,7 +81,7 @@ class PeepControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/sessions/new"));
 
-        verifyNoInteractions(userService,peepService);
+        verifyNoInteractions(userService, peepService);
     }
 
 }
