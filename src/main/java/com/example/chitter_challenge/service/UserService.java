@@ -5,6 +5,8 @@ import com.example.chitter_challenge.repository.UserRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Optional;
+
 public class UserService {
     private final UserRepository users;
     private final PasswordEncoder passwordEncoder;
@@ -32,7 +34,10 @@ public class UserService {
             throw new DuplicateUserException("That username or email is already in use");
         }
     }
-    public void findByUsername(String username){
+    public Optional<User> findByUsername(String username){
+
+
+        return null;
 
     }
 

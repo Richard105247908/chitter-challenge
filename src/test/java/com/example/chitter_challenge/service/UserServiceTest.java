@@ -79,4 +79,11 @@ public class UserServiceTest {
 
         assertEquals("That username or email is already in use", e.getMessage());
     }
+    @Test
+    void findsAUserByUsername() {
+        User alex = new User(1L, "alex@example.com", "hash", "Alex", "alex1");
+        when(users.findByUsername("alex1")).thenReturn(Optional.of(alex));
+
+        assertEquals(Optional.of(alex), service.findByUsername("alex1"));
+    }
 }
