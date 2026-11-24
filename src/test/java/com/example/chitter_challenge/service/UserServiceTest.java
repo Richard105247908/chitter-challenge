@@ -42,4 +42,8 @@ public class UserServiceTest {
         assertEquals("Alex", saved.getName());
         assertEquals("alex1", saved.getUsername());
     }
+    @Test
+    void signUpRejectsATakenUsernameWithoutSaving() {
+
+    }
 }
