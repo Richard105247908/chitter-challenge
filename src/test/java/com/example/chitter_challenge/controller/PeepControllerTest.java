@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -74,4 +73,14 @@ class PeepControllerTest {
 
         verify(peepService).post(alex, "Hello");
     }
+    @Test
+    void postPeepRedirectsToLoginWhenNotLoggedIn() throws Exception {
+
+        mockMvc.perform(post("/peeps").param("message", "Hello"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/sessions/new"));
+
+        verifyNoInteractions(userService,peepService);
+    }
+
 }
