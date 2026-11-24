@@ -1,5 +1,6 @@
 package com.example.chitter_challenge.controller;
 
+import com.example.chitter_challenge.model.User;
 import com.example.chitter_challenge.service.PeepService;
 import com.example.chitter_challenge.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class PeepController {
@@ -34,5 +36,10 @@ public class PeepController {
     }
 
     @PostMapping("/peeps")
-    public String
+    public String create(@RequestParam String message, HttpSession session) {
+        String username = (String) session.getAttribute(SESSION_USERNAME);
+        User user = userService.findByUsername(username).get();
+        peepService.post(user, message);
+        return "redirect:/peeps";
+    }
 }
