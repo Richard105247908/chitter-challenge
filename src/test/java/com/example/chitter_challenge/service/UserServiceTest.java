@@ -11,8 +11,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -44,6 +47,13 @@ public class UserServiceTest {
     }
     @Test
     void signUpRejectsATakenUsernameWithoutSaving() {
+        User existing = new User(1L, "other@example.com", "hash", "Other", "alex1");
+        when(users.findByUsername("alex1")).thenReturn(Optional.of(existing));
 
+        DuplicateUserException e = assertThrows(DuplicateUserException.class,
+                () -> service.signUp("alex@example.com", "password123", "Alex", "alex1"));
+
+        assertEquals("That username is already taken", e.getMessage());
+        verify(users, never()).save(any());
     }
 }
