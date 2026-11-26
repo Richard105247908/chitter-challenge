@@ -101,4 +101,9 @@ class PeepControllerTest {
         assertTrue(session.isInvalid());
         verifyNoInteractions(peepService);
     }
+
+    @Test
+    void postPeepRedisplaysFormWithErrorWhenMessageIsInvalid() throws Exception {
+
+    }
 }

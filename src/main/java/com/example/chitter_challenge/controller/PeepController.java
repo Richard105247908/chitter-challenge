@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Optional;
+
 @Controller
 public class PeepController {
     private final PeepService peepService;
@@ -41,8 +43,13 @@ public class PeepController {
         if (username==null){
             return "redirect:/sessions/new";
         }
-        User user = userService.findByUsername(username).get();
-        peepService.post(user, message);
+        Optional<User> maybeUser = userService.findByUsername(username);
+        if (maybeUser.isEmpty()) {
+            session.invalidate();
+            return "redirect:/sessions/new";
+        }
+
+        peepService.post(maybeUser.get(), message);
         return "redirect:/peeps";
     }
 }
