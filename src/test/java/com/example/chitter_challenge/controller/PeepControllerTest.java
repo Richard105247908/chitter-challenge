@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -104,7 +105,6 @@ class PeepControllerTest {
     }
 
     @Test
-    @Test
     void postPeepRedisplaysFormWithErrorWhenMessageIsInvalid() throws Exception {
         User alex = new User(1L, "alex@example.com", "hash", "Alex", "alex1");
         when(userService.findByUsername("alex1")).thenReturn(Optional.of(alex));
@@ -118,5 +118,36 @@ class PeepControllerTest {
                 .andExpect(view().name("peeps/new"))
                 .andExpect(model().attribute("error", "Test error text"))
                 .andExpect(model().attribute("message", "my draft peep"));
+    }
+    @Test
+    void postPeepRendersErrorAndDraftInHtmlWhenMessageIsInvalid() throws Exception {
+        User alex = new User(1L, "alex@example.com", "hash", "Alex", "alex1");
+        when(userService.findByUsername("alex1")).thenReturn(Optional.of(alex));
+        doThrow(new InvalidPeepException("Test error text"))
+                .when(peepService).post(alex, "my draft peep");
+
+        mockMvc.perform(post("/peeps")
+                        .sessionAttr(PeepController.SESSION_USERNAME, "alex1")
+                        .param("message", "my draft peep"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("peeps/new"))
+                .andExpect(content().string(containsString("Test error text")))
+                .andExpect(content().string(containsString("my draft peep")));
+    }
+
+    @Test
+    void postPeepEscapesHtmlInDraftWhenRedisplayingForm() throws Exception {
+        User alex = new User(1L, "alex@example.com", "hash", "Alex", "alex1");
+        when(userService.findByUsername("alex1")).thenReturn(Optional.of(alex));
+        doThrow(new InvalidPeepException("Test error text"))
+                .when(peepService).post(alex, "<b>hi</b>");
+
+        mockMvc.perform(post("/peeps")
+                        .sessionAttr(PeepController.SESSION_USERNAME, "alex1")
+                        .param("message", "<b>hi</b>"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("peeps/new"))
+                .andExpect(content().string(containsString("&lt;b&gt;hi&lt;/b&gt;")))
+                .andExpect(content().string(not(containsString("<b>hi</b>"))));
     }
 }

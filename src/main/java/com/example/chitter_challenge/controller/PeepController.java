@@ -1,6 +1,7 @@
 package com.example.chitter_challenge.controller;
 
 import com.example.chitter_challenge.model.User;
+import com.example.chitter_challenge.service.InvalidPeepException;
 import com.example.chitter_challenge.service.PeepService;
 import com.example.chitter_challenge.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -38,18 +39,26 @@ public class PeepController {
     }
 
     @PostMapping("/peeps")
-    public String create(@RequestParam String message, HttpSession session) {
+    public String create(@RequestParam String message, HttpSession session, Model model) {
         String username = (String) session.getAttribute(SESSION_USERNAME);
-        if (username==null){
+        if (username == null) {
             return "redirect:/sessions/new";
         }
+
         Optional<User> maybeUser = userService.findByUsername(username);
         if (maybeUser.isEmpty()) {
             session.invalidate();
             return "redirect:/sessions/new";
         }
 
-        peepService.post(maybeUser.get(), message);
+        try {
+            peepService.post(maybeUser.get(), message);
+        } catch (InvalidPeepException e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("message", message);
+            return "peeps/new";
+        }
+
         return "redirect:/peeps";
     }
 }

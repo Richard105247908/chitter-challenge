@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>New Peep</title>
 </head>
 <body>
-<main>
-    <h1>Post a Peep</h1>
-    <form method="post" th:action="@{/peeps}">
-        <label for="message">Message</label>
-        <textarea id="message" name="message" maxlength="200"></textarea>
-        <button type="submit">Peep</button>
-    </form>
-</main>
+<h1>Post a Peep</h1>
+
+<p th:if="${error}" th:text="${error}"></p>
+
+<form th:action="@{/peeps}" method="post">
+    <label for="message">Message</label>
+    <textarea id="message" name="message" maxlength="200" th:text="${message}"></textarea>
+    <button type="submit">Post</button>
+</form>
 </body>
 </html>
