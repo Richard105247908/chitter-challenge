@@ -2,6 +2,7 @@ package com.example.chitter_challenge.controller;
 
 import com.example.chitter_challenge.model.Peep;
 import com.example.chitter_challenge.model.User;
+import com.example.chitter_challenge.service.InvalidPeepException;
 import com.example.chitter_challenge.service.PeepService;
 import com.example.chitter_challenge.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -103,7 +104,19 @@ class PeepControllerTest {
     }
 
     @Test
+    @Test
     void postPeepRedisplaysFormWithErrorWhenMessageIsInvalid() throws Exception {
+        User alex = new User(1L, "alex@example.com", "hash", "Alex", "alex1");
+        when(userService.findByUsername("alex1")).thenReturn(Optional.of(alex));
+        doThrow(new InvalidPeepException("Test error text"))
+                .when(peepService).post(alex, "my draft peep");
 
+        mockMvc.perform(post("/peeps")
+                        .sessionAttr(PeepController.SESSION_USERNAME, "alex1")
+                        .param("message", "my draft peep"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("peeps/new"))
+                .andExpect(model().attribute("error", "Test error text"))
+                .andExpect(model().attribute("message", "my draft peep"));
     }
 }
