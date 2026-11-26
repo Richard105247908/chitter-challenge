@@ -86,4 +86,14 @@ public class UserServiceTest {
 
         assertEquals(Optional.of(alex), service.findByUsername("alex1"));
     }
+
+    @Test
+    void signUpReturnsTheSavedUser() {
+        User saved = new User(7L, "alex@example.com", "hash", "Alex", "alex1");
+        when(users.save(any())).thenReturn(saved);
+
+        User result = service.signUp("alex@example.com", "password123", "Alex", "alex1");
+
+        assertSame(saved, result);
+    }
 }
