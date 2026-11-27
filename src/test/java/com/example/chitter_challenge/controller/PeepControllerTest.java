@@ -16,6 +16,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.chitter_challenge.controller.UserSession.SESSION_USERNAME;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -60,7 +61,7 @@ class PeepControllerTest {
 
     @Test
     void showsNewPeepFormWhenLoggedIn() throws Exception {
-        mockMvc.perform(get("/peeps/new").sessionAttr(PeepController.SESSION_USERNAME, "alex1"))
+        mockMvc.perform(get("/peeps/new").sessionAttr(SESSION_USERNAME, "alex1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("peeps/new"))
                 .andExpect(content().string(containsString("name=\"message\"")));
@@ -71,7 +72,7 @@ class PeepControllerTest {
         User alex = new User(1L, "alex@example.com", "hash", "Alex", "alex1");
         when(userService.findByUsername("alex1")).thenReturn(Optional.of(alex));
 
-        mockMvc.perform(post("/peeps").sessionAttr(PeepController.SESSION_USERNAME, "alex1").param("message", "Hello"))
+        mockMvc.perform(post("/peeps").sessionAttr(SESSION_USERNAME, "alex1").param("message", "Hello"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/peeps"));
 
@@ -91,7 +92,7 @@ class PeepControllerTest {
     @Test
     void postPeepInvalidatesSessionAndRedirectsWhenUserDoesNotExist() throws Exception {
         MockHttpSession session = new MockHttpSession();
-        session.setAttribute(PeepController.SESSION_USERNAME, "ghost");
+        session.setAttribute(SESSION_USERNAME, "ghost");
 
         when(userService.findByUsername("ghost")).thenReturn(Optional.empty());
 
@@ -112,7 +113,7 @@ class PeepControllerTest {
                 .when(peepService).post(alex, "my draft peep");
 
         mockMvc.perform(post("/peeps")
-                        .sessionAttr(PeepController.SESSION_USERNAME, "alex1")
+                        .sessionAttr(SESSION_USERNAME, "alex1")
                         .param("message", "my draft peep"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("peeps/new"))
@@ -127,7 +128,7 @@ class PeepControllerTest {
                 .when(peepService).post(alex, "my draft peep");
 
         mockMvc.perform(post("/peeps")
-                        .sessionAttr(PeepController.SESSION_USERNAME, "alex1")
+                        .sessionAttr(SESSION_USERNAME, "alex1")
                         .param("message", "my draft peep"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("peeps/new"))
@@ -143,7 +144,7 @@ class PeepControllerTest {
                 .when(peepService).post(alex, "<b>hi</b>");
 
         mockMvc.perform(post("/peeps")
-                        .sessionAttr(PeepController.SESSION_USERNAME, "alex1")
+                        .sessionAttr(SESSION_USERNAME, "alex1")
                         .param("message", "<b>hi</b>"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("peeps/new"))

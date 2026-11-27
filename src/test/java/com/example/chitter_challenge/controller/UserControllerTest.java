@@ -12,6 +12,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.web.servlet.MvcResult;
 
 
+import static com.example.chitter_challenge.controller.UserSession.SESSION_USERNAME;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.*;
@@ -58,7 +59,7 @@ class UserControllerTest {
                 .andExpect(redirectedUrl("/peeps"));
 
         verify(userService).signUp("alex@example.com", "password123", "Alex", "alex1");
-        assertEquals("alex_saved", session.getAttribute(PeepController.SESSION_USERNAME));
+        assertEquals("alex_saved", session.getAttribute(SESSION_USERNAME));
     }
 
     @Test
@@ -82,7 +83,7 @@ class UserControllerTest {
                 .andExpect(model().attribute("username", "alex1"))
                 .andExpect(model().attributeDoesNotExist("password"));
 
-        assertNull(session.getAttribute(PeepController.SESSION_USERNAME));
+        assertNull(session.getAttribute(SESSION_USERNAME));
     }
 
     @Test

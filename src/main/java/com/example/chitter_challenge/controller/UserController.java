@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import static com.example.chitter_challenge.controller.UserSession.SESSION_USERNAME;
+
 @Controller
 public class UserController {
     private final UserService userService;
@@ -34,8 +36,7 @@ public class UserController {
                          Model model) {
         try {
             User saved = userService.signUp(email, password, name, username);
-            request.changeSessionId();
-            session.setAttribute(PeepController.SESSION_USERNAME, saved.getUsername());
+            UserSession.logIn(request, session, saved.getUsername());
             return "redirect:/peeps";
         } catch (DuplicateUserException e) {
             model.addAttribute("error", e.getMessage());

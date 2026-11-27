@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 
+import static com.example.chitter_challenge.controller.UserSession.SESSION_USERNAME;
+
 @Controller
 public class SessionController {
 
@@ -41,7 +43,13 @@ public class SessionController {
         }
 
         request.changeSessionId();
-        session.setAttribute(PeepController.SESSION_USERNAME, maybeUser.get().getUsername());
+        UserSession.logIn(request, session, maybeUser.get().getUsername());
+        return "redirect:/peeps";
+    }
+
+    @PostMapping("/sessions/delete")
+    public String delete(HttpSession session) {
+        session.invalidate();
         return "redirect:/peeps";
     }
 

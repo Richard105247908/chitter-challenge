@@ -13,11 +13,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 
+import static com.example.chitter_challenge.controller.UserSession.SESSION_USERNAME;
+
 @Controller
 public class PeepController {
     private final PeepService peepService;
     private final UserService userService;
-    public static final String SESSION_USERNAME = "username";
 
     public PeepController(PeepService peepService, UserService userService) {
         this.peepService = peepService;
@@ -32,7 +33,8 @@ public class PeepController {
 
     @GetMapping("/peeps/new")
     public String newPeepForm(HttpSession session) {
-        if (session.getAttribute(SESSION_USERNAME) == null) {
+        String username = UserSession.currentUsername(session);
+        if (username == null) {
             return "redirect:/sessions/new";
         }
         return "peeps/new";
@@ -40,7 +42,7 @@ public class PeepController {
 
     @PostMapping("/peeps")
     public String create(@RequestParam String message, HttpSession session, Model model) {
-        String username = (String) session.getAttribute(SESSION_USERNAME);
+        String username = UserSession.currentUsername(session);
         if (username == null) {
             return "redirect:/sessions/new";
         }

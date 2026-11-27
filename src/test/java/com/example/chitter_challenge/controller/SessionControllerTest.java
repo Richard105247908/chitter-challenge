@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Optional;
 
+import static com.example.chitter_challenge.controller.UserSession.SESSION_USERNAME;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.*;
@@ -56,7 +57,7 @@ class SessionControllerTest {
                 .andExpect(redirectedUrl("/peeps"));
 
         verify(userService).authenticate("alex1", "password123");
-        assertEquals("alex_saved", session.getAttribute(PeepController.SESSION_USERNAME));
+        assertEquals("alex_saved", session.getAttribute(SESSION_USERNAME));
     }
 
     @Test
@@ -77,7 +78,7 @@ class SessionControllerTest {
                 .andExpect(model().attributeDoesNotExist("password"));
 
         verify(userService).authenticate("alex1", "wrong-password");
-        assertNull(session.getAttribute(PeepController.SESSION_USERNAME));
+        assertNull(session.getAttribute(SESSION_USERNAME));
     }
 
     @Test
@@ -110,6 +111,18 @@ class SessionControllerTest {
                 .andReturn();
 
         assertNotEquals(before, result.getRequest().getSession().getId());
+    }
+
+    @Test
+    void postSessionsDeleteInvalidatesSessionAndRedirects() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute(UserSession.SESSION_USERNAME, "alex1");
+
+        mockMvc.perform(post("/sessions/delete").session(session))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/peeps"));
+
+        assertTrue(session.isInvalid());
     }
 
 }
