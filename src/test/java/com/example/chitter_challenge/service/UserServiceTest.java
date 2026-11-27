@@ -96,4 +96,34 @@ public class UserServiceTest {
 
         assertSame(saved, result);
     }
+
+    @Test
+    void authenticateReturnsTheUserWhenThePasswordMatches() {
+        User alex = new User(1L, "alex@example.com", encoder.encode("password123"), "Alex", "alex1");
+        when(users.findByUsername("alex1")).thenReturn(Optional.of(alex));
+
+        Optional<User> result = service.authenticate("alex1", "password123");
+
+        assertTrue(result.isPresent());
+        assertSame(alex, result.get());
+    }
+
+    @Test
+    void authenticateReturnsEmptyWhenPasswordIsWrong() {
+        User alex = new User(1L, "alex@example.com", encoder.encode("password123"), "Alex", "alex1");
+        when(users.findByUsername("alex1")).thenReturn(Optional.of(alex));
+
+        Optional<User> result = service.authenticate("alex1", "wrong-password");
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void authenticateReturnsEmptyWhenUsernameDoesNotExist() {
+        when(users.findByUsername("ghost")).thenReturn(Optional.empty());
+
+        Optional<User> result = service.authenticate("ghost", "password123");
+
+        assertTrue(result.isEmpty());
+    }
 }

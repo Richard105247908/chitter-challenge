@@ -40,4 +40,9 @@ public class UserService {
         return users.findByUsername(username);
     }
 
+    public Optional<User> authenticate(String username, String password) {
+        return users.findByUsername(username)
+                .filter(user -> passwordEncoder.matches(password, user.getPasswordHash()));
+    }
+
 }
