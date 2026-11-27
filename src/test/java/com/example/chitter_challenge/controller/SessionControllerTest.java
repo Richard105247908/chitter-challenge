@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -55,6 +56,27 @@ class SessionControllerTest {
 
         verify(userService).authenticate("alex1", "password123");
         assertEquals("alex_saved", session.getAttribute(PeepController.SESSION_USERNAME));
+    }
+
+    @Test
+    void postSessionsRedisplaysFormWithErrorWhenCredentialsAreInvalid() throws Exception {
+        when(userService.authenticate("alex1", "wrong-password"))
+                .thenReturn(Optional.empty());
+
+        MockHttpSession session = new MockHttpSession();
+
+        mockMvc.perform(post("/sessions")
+                        .session(session)
+                        .param("username", "alex1")
+                        .param("password", "wrong-password"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("sessions/new"))
+                .andExpect(model().attribute("error", "Invalid username or password"))
+                .andExpect(model().attribute("username", "alex1"))
+                .andExpect(model().attributeDoesNotExist("password"));
+
+        verify(userService).authenticate("alex1", "wrong-password");
+        assertNull(session.getAttribute(PeepController.SESSION_USERNAME));
     }
 
 

@@ -4,9 +4,12 @@ import com.example.chitter_challenge.model.User;
 import com.example.chitter_challenge.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Optional;
 
 @Controller
 public class SessionController {
@@ -26,9 +29,16 @@ public class SessionController {
     @PostMapping("/sessions")
     public String create(@RequestParam String username,
                          @RequestParam String password,
-                         HttpSession session) {
-        User user = userService.authenticate(username, password).get();
-        session.setAttribute(PeepController.SESSION_USERNAME, user.getUsername());
+                         HttpSession session,
+                         Model model) {
+        Optional<User> maybeUser = userService.authenticate(username, password);
+        if (maybeUser.isEmpty()) {
+            model.addAttribute("error", "Invalid username or password");
+            model.addAttribute("username", username);
+            return "sessions/new";
+        }
+
+        session.setAttribute(PeepController.SESSION_USERNAME, maybeUser.get().getUsername());
         return "redirect:/peeps";
     }
 
