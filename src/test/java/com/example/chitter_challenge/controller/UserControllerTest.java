@@ -39,7 +39,8 @@ class UserControllerTest {
                 .andExpect(content().string(containsString("name=\"email\"")))
                 .andExpect(content().string(containsString("name=\"name\"")))
                 .andExpect(content().string(containsString("name=\"username\"")))
-                .andExpect(content().string(containsString("type=\"password\"")));
+                .andExpect(content().string(containsString("type=\"password\"")))
+                .andExpect(content().string(containsString("minlength=\"8\"")));
     }
 
     @Test
