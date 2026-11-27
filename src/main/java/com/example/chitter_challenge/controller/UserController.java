@@ -2,6 +2,7 @@ package com.example.chitter_challenge.controller;
 
 import com.example.chitter_challenge.model.User;
 import com.example.chitter_challenge.service.DuplicateUserException;
+import com.example.chitter_challenge.service.InvalidUserException;
 import com.example.chitter_challenge.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -38,7 +39,7 @@ public class UserController {
             User saved = userService.signUp(email, password, name, username);
             UserSession.logIn(request, session, saved.getUsername());
             return "redirect:/peeps";
-        } catch (DuplicateUserException e) {
+        } catch (DuplicateUserException | InvalidUserException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("email", email);
             model.addAttribute("name", name);

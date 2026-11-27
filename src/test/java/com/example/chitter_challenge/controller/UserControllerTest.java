@@ -2,6 +2,7 @@ package com.example.chitter_challenge.controller;
 
 import com.example.chitter_challenge.model.User;
 import com.example.chitter_challenge.service.DuplicateUserException;
+import com.example.chitter_challenge.service.InvalidUserException;
 import com.example.chitter_challenge.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,8 +122,31 @@ class UserControllerTest {
                         .param("name", "Alex")
                         .param("username", "alex1"))
                 .andReturn();
-
         assertNotEquals(before, result.getRequest().getSession().getId());
+    }
+
+    @Test
+    void postUsersRedisplaysFormWithErrorWhenSignUpIsInvalid() throws Exception {
+        when(userService.signUp("alex@example.com", "short", "Alex", "alex1"))
+                .thenThrow(new InvalidUserException("Test invalid error"));
+
+        MockHttpSession session = new MockHttpSession();
+
+        mockMvc.perform(post("/users")
+                        .session(session)
+                        .param("email", "alex@example.com")
+                        .param("password", "short")
+                        .param("name", "Alex")
+                        .param("username", "alex1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("users/new"))
+                .andExpect(model().attribute("error", "Test invalid error"))
+                .andExpect(model().attribute("email", "alex@example.com"))
+                .andExpect(model().attribute("name", "Alex"))
+                .andExpect(model().attribute("username", "alex1"))
+                .andExpect(model().attributeDoesNotExist("password"));
+
+        assertNull(session.getAttribute(UserSession.SESSION_USERNAME));
     }
 
 }
