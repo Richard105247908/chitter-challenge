@@ -138,7 +138,23 @@ public class UserServiceTest {
                 InvalidUserException.class,
                 () -> service.signUp("alex@example.com", "secret123", "Alex", blankUsername));
 
-        assertTrue(ex.getMessage().toLowerCase().contains("username"));
+        String msg = ex.getMessage().toLowerCase();
+        assertTrue(msg.contains("username"));
+        assertFalse(msg.contains("email"));
+        verifyNoInteractions(users);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"   ", "\t"})
+    void signUpRejectsBlankOrNullEmail(String blankEmail) {
+        InvalidUserException ex = assertThrows(
+                InvalidUserException.class,
+                () -> service.signUp(blankEmail, "secret123", "Alex", "alex1"));
+
+        String msg = ex.getMessage().toLowerCase();
+        assertTrue(msg.contains("email"));
+        assertFalse(msg.contains("username"));
         verifyNoInteractions(users);
     }
 

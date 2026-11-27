@@ -22,6 +22,9 @@ public class UserService {
         if (username == null || username.isBlank()) {
             throw new InvalidUserException("Username must not be blank");
         }
+        if (email == null || email.isBlank()) {
+            throw new InvalidUserException("Email is required");
+        }
 
         if (users.findByUsername(username).isPresent()) {
             throw new DuplicateUserException("That username is already taken");
