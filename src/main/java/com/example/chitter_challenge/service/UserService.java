@@ -25,6 +25,9 @@ public class UserService {
         if (email == null || email.isBlank()) {
             throw new InvalidUserException("Email is required");
         }
+        if (name == null || name.isBlank()) {
+            throw new InvalidUserException("Name is required");
+        }
 
         if (users.findByUsername(username).isPresent()) {
             throw new DuplicateUserException("That username is already taken");
