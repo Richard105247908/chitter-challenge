@@ -16,10 +16,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserControllerTest {
 
     @Autowired
-     MockMvc mockMvc;
+    MockMvc mockMvc;
 
     @MockitoBean
-     UserService userService;
+    UserService userService;
 
     @Test
     void showsTheSignUpForm() throws Exception {
