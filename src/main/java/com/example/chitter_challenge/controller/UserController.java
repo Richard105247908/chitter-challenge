@@ -3,6 +3,7 @@ package com.example.chitter_challenge.controller;
 import com.example.chitter_challenge.model.User;
 import com.example.chitter_challenge.service.DuplicateUserException;
 import com.example.chitter_challenge.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,10 +29,12 @@ public class UserController {
                          @RequestParam String password,
                          @RequestParam String name,
                          @RequestParam String username,
+                         HttpServletRequest request,
                          HttpSession session,
                          Model model) {
         try {
             User saved = userService.signUp(email, password, name, username);
+            request.changeSessionId();
             session.setAttribute(PeepController.SESSION_USERNAME, saved.getUsername());
             return "redirect:/peeps";
         } catch (DuplicateUserException e) {

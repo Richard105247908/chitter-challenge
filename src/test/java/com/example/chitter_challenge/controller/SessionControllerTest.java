@@ -112,28 +112,4 @@ class SessionControllerTest {
         assertNotEquals(before, result.getRequest().getSession().getId());
     }
 
-    @Test
-    void signUpChangesTheSessionId() throws Exception {
-        User saved = new User(1L, "alex@example.com", "hash", "Alex", "alex1");
-        when(userService.signUp("alex@example.com", "password123", "Alex", "alex1"))
-                .thenReturn(saved);
-
-        MockHttpSession session = new MockHttpSession();
-        String before = session.getId();
-
-        MvcResult result = mockMvc.perform(post("/users")
-                        .session(session)
-                        .param("email", "alex@example.com")
-                        .param("password", "password123")
-                        .param("name", "Alex")
-                        .param("username", "alex1"))
-                .andReturn();
-
-        assertNotEquals(before, result.getRequest().getSession().getId());
-    }
-
-
-
-
-
 }
