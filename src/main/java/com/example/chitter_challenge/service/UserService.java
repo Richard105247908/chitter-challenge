@@ -29,6 +29,10 @@ public class UserService {
             throw new InvalidUserException("Name is required");
         }
 
+        if (password == null || password.isBlank()) {
+            throw new InvalidUserException("Password is required");
+        }
+
         if (users.findByUsername(username).isPresent()) {
             throw new DuplicateUserException("That username is already taken");
         }

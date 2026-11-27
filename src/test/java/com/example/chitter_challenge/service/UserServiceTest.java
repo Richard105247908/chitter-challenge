@@ -158,5 +158,18 @@ public class UserServiceTest {
         verifyNoInteractions(users);
     }
 
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"   ", "\t"})
+    void signUpRejectsBlankOrNullPassword(String blankPassword) {
+        InvalidUserException ex = assertThrows(
+                InvalidUserException.class,
+                () -> service.signUp("alex@example.com", blankPassword, "Alex", "alex1"));
+
+        String msg = ex.getMessage().toLowerCase();
+        assertTrue(msg.contains("password"));
+        verifyNoInteractions(users);
+    }
+
 
 }
