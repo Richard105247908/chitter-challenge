@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.verify;
@@ -77,6 +78,21 @@ class SessionControllerTest {
 
         verify(userService).authenticate("alex1", "wrong-password");
         assertNull(session.getAttribute(PeepController.SESSION_USERNAME));
+    }
+
+    @Test
+    void postSessionsRendersErrorAndUsernameWithoutPasswordInHtml() throws Exception {
+        when(userService.authenticate("alex1", "wrong-password"))
+                .thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/sessions")
+                        .param("username", "alex1")
+                        .param("password", "wrong-password"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("sessions/new"))
+                .andExpect(content().string(containsString("Invalid username or password")))
+                .andExpect(content().string(containsString("alex1")))
+                .andExpect(content().string(not(containsString("wrong-password"))));
     }
 
 
