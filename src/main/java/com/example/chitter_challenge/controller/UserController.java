@@ -1,8 +1,12 @@
 package com.example.chitter_challenge.controller;
 
+import com.example.chitter_challenge.model.User;
 import com.example.chitter_challenge.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class UserController {
@@ -16,4 +20,16 @@ public class UserController {
     public String newUser() {
         return "users/new";
     }
+
+    @PostMapping("/users")
+    public String create(@RequestParam String email,
+                         @RequestParam String password,
+                         @RequestParam String name,
+                         @RequestParam String username,
+                         HttpSession session) {
+        User saved = userService.signUp(email, password, name, username);
+        session.setAttribute(PeepController.SESSION_USERNAME, saved.getUsername());
+        return "redirect:/peeps";
+    }
+
 }
