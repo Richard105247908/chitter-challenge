@@ -1,6 +1,7 @@
 package com.example.chitter_challenge.controller;
 
 import com.example.chitter_challenge.model.User;
+import com.example.chitter_challenge.service.DuplicateUserException;
 import com.example.chitter_challenge.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,8 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -58,4 +59,29 @@ class UserControllerTest {
         verify(userService).signUp("alex@example.com", "password123", "Alex", "alex1");
         assertEquals("alex_saved", session.getAttribute(PeepController.SESSION_USERNAME));
     }
+
+    @Test
+    void postUsersRedisplaysFormWithoutPasswordWhenUserIsDuplicate() throws Exception {
+        doThrow(new DuplicateUserException("Test duplicate error"))
+                .when(userService).signUp("alex@example.com", "password123", "Alex", "alex1");
+
+        MockHttpSession session = new MockHttpSession();
+
+        mockMvc.perform(post("/users")
+                        .session(session)
+                        .param("email", "alex@example.com")
+                        .param("password", "password123")
+                        .param("name", "Alex")
+                        .param("username", "alex1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("users/new"))
+                .andExpect(model().attribute("error", "Test duplicate error"))
+                .andExpect(model().attribute("email", "alex@example.com"))
+                .andExpect(model().attribute("name", "Alex"))
+                .andExpect(model().attribute("username", "alex1"))
+                .andExpect(model().attributeDoesNotExist("password"));
+
+        assertNull(session.getAttribute(PeepController.SESSION_USERNAME));
+    }
+
 }
