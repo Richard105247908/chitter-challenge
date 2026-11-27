@@ -11,6 +11,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.Optional;
 import static com.example.chitter_challenge.controller.UserSession.SESSION_USERNAME;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -48,7 +50,20 @@ class PeepControllerTest {
                 .andExpect(view().name("peeps/index"))
                 .andExpect(model().attribute("peeps", List.of(newer, older)))
                 .andExpect(content().string(containsString("Alex (@alex1)")))
-                .andExpect(content().string(containsString("Second peep")));
+                .andExpect(content().string(containsString("Second peep")))
+                .andExpect(content().string(containsString("First peep")));
+    }
+
+    @Test
+    void streamShowsAReadableTimeAndAMachineReadableDatetime() throws Exception {
+        Peep peep = new Peep(1L, "Timed peep", OffsetDateTime.parse("2026-11-19T15:05:00Z"), "Alex", "alex1");
+        when(peepService.getStream()).thenReturn(List.of(peep));
+
+        mockMvc.perform(get("/peeps"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("19 Nov 2026, 15:05")))
+                .andExpect(content().string(containsString("datetime=\"2026-11-19T15:05")))
+                .andExpect(content().string(not(containsString(">2026-11-19T15:05:00Z<"))));
     }
 
     @Test
@@ -57,7 +72,6 @@ class PeepControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/sessions/new"));
     }
-
 
     @Test
     void showsNewPeepFormWhenLoggedIn() throws Exception {
@@ -81,7 +95,6 @@ class PeepControllerTest {
 
     @Test
     void postPeepRedirectsToLoginWhenNotLoggedIn() throws Exception {
-
         mockMvc.perform(post("/peeps").param("message", "Hello"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/sessions/new"));
@@ -120,6 +133,7 @@ class PeepControllerTest {
                 .andExpect(model().attribute("error", "Test error text"))
                 .andExpect(model().attribute("message", "my draft peep"));
     }
+
     @Test
     void postPeepRendersErrorAndDraftInHtmlWhenMessageIsInvalid() throws Exception {
         User alex = new User(1L, "alex@example.com", "hash", "Alex", "alex1");
@@ -153,16 +167,34 @@ class PeepControllerTest {
     }
 
     @Test
-    void rootRedirectsToPeeps() throws Exception {
+    void rootRedirectsToThePeepStream() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/peeps"));
     }
 
     @Test
-    void rootRedirectsToThePeepStream() throws Exception {
-        mockMvc.perform(get("/"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/peeps"));
+    void streamShowsLogInAndSignUpLinksWhenLoggedOut() throws Exception {
+        when(peepService.getStream()).thenReturn(List.of());
+
+        MvcResult result = mockMvc.perform(get("/peeps"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("href=\"/sessions/new\"")))
+                .andExpect(content().string(containsString("href=\"/users/new\"")))
+                .andExpect(content().string(not(containsString("action=\"/sessions/delete\""))))
+                .andReturn();
+
+        assertNull(result.getRequest().getSession(false));
+    }
+
+    @Test
+    void streamShowsNewPeepLinkAndLogOutButtonWhenLoggedIn() throws Exception {
+        when(peepService.getStream()).thenReturn(List.of());
+
+        mockMvc.perform(get("/peeps").sessionAttr(SESSION_USERNAME, "alex1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("href=\"/peeps/new\"")))
+                .andExpect(content().string(containsString("action=\"/sessions/delete\"")))
+                .andExpect(content().string(not(containsString("href=\"/users/new\""))));
     }
 }

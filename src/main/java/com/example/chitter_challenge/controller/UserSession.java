@@ -15,7 +15,11 @@ public final class UserSession {
         session.setAttribute(SESSION_USERNAME, username);
     }
 
+    public static String currentUsername(HttpServletRequest request) {
+        return currentUsername(request.getSession(false));
+    }
+
     public static String currentUsername(HttpSession session) {
-        return (String) session.getAttribute(SESSION_USERNAME);
+        return session == null ? null : (String) session.getAttribute(SESSION_USERNAME);
     }
 }

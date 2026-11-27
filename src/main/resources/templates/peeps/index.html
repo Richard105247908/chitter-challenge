@@ -5,12 +5,14 @@
     <title>Chitter</title>
 </head>
 <body>
+<nav th:replace="~{fragments/nav :: nav}"></nav>
 <main>
     <h1>Chitter</h1>
     <article th:each="peep : ${peeps}">
         <p th:text="|${peep.authorName} (@${peep.authorUsername})|">Author (@username)</p>
         <p th:text="${peep.message}">Peep message</p>
-        <time th:text="${peep.createdAt}">2026-11-19T11:00:00Z</time>
+        <time th:datetime="${peep.createdAt}"
+              th:text="|${#temporals.format(peep.createdAt, 'd MMM yyyy, HH:mm', T(java.util.Locale).ENGLISH)} UTC|">19 Nov 2026, 15:05 UTC</time>
     </article>
 </main>
 </body>
