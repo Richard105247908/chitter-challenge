@@ -8,23 +8,27 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 
 
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
 class UserControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+     MockMvc mockMvc;
 
     @MockitoBean
-    private UserService userService;
+     UserService userService;
 
     @Test
-    void getNewUserFormRendersSignUpView() throws Exception {
+    void showsTheSignUpForm() throws Exception {
         mockMvc.perform(get("/users/new"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("users/new"));
+                .andExpect(view().name("users/new"))
+                .andExpect(content().string(containsString("name=\"email\"")))
+                .andExpect(content().string(containsString("name=\"name\"")))
+                .andExpect(content().string(containsString("name=\"username\"")))
+                .andExpect(content().string(containsString("type=\"password\"")));
     }
 }
