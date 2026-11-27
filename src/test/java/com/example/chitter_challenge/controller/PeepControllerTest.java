@@ -158,4 +158,11 @@ class PeepControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/peeps"));
     }
+
+    @Test
+    void rootRedirectsToThePeepStream() throws Exception {
+        mockMvc.perform(get("/"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/peeps"));
+    }
 }
