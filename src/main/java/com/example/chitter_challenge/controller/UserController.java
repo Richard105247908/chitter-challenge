@@ -18,7 +18,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("users/new")
+    @GetMapping("/users/new")
     public String newUser() {
         return "users/new";
     }

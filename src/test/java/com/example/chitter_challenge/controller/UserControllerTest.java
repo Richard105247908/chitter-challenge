@@ -12,6 +12,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
@@ -82,6 +83,25 @@ class UserControllerTest {
                 .andExpect(model().attributeDoesNotExist("password"));
 
         assertNull(session.getAttribute(PeepController.SESSION_USERNAME));
+    }
+
+    @Test
+    void postUsersRendersErrorAndTypedFieldsWithoutPasswordInHtml() throws Exception {
+        doThrow(new DuplicateUserException("Test duplicate error"))
+                .when(userService).signUp("alex@example.com", "password123", "Alex", "alex1");
+
+        mockMvc.perform(post("/users")
+                        .param("email", "alex@example.com")
+                        .param("password", "password123")
+                        .param("name", "Alex")
+                        .param("username", "alex1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("users/new"))
+                .andExpect(content().string(containsString("Test duplicate error")))
+                .andExpect(content().string(containsString("alex@example.com")))
+                .andExpect(content().string(containsString("Alex")))
+                .andExpect(content().string(containsString("alex1")))
+                .andExpect(content().string(not(containsString("password123"))));
     }
 
 }
