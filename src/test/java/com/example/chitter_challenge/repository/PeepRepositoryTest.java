@@ -51,9 +51,9 @@ public class PeepRepositoryTest {
         List<Peep> all = peeps.findAllNewestFirst();
 
         assertEquals(3, all.size());
-        assertEquals("Newest peep", all.get(0));
-        assertEquals("Middle peep", all.get(1));
-        assertEquals("Oldest peep", all.get(0));
+        assertEquals("Newest peep", all.get(0).getMessage());
+        assertEquals("Middle peep", all.get(1).getMessage());
+        assertEquals("Oldest peep", all.get(2).getMessage());
 
         assertEquals(
                 List.of("Newest peep", "Middle peep", "Oldest peep"),

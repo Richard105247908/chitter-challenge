@@ -4,9 +4,11 @@ import com.example.chitter_challenge.model.User;
 import com.example.chitter_challenge.repository.UserRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class UserService {
     private final UserRepository users;
     private final PasswordEncoder passwordEncoder;
