@@ -15,13 +15,5 @@ public class ChitterChallengeApplication {
 		SpringApplication.run(ChitterChallengeApplication.class, args);
 	}
 
-	@Bean
-	public Clock clock() {
-		return Clock.systemUTC();
-	}
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
 }

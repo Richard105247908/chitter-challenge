@@ -19,6 +19,9 @@ public class UserService {
     }
 
     public User signUp(String email, String password, String name, String username) {
+        if (username == null || username.isBlank()) {
+            throw new InvalidUserException("Username must not be blank");
+        }
 
         if (users.findByUsername(username).isPresent()) {
             throw new DuplicateUserException("That username is already taken");

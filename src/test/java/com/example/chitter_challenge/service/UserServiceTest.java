@@ -5,6 +5,9 @@ import com.example.chitter_challenge.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -126,4 +129,18 @@ public class UserServiceTest {
 
         assertTrue(result.isEmpty());
     }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"   ", "\t"})
+    void signUpRejectsBlankOrNullUsername(String blankUsername) {
+        InvalidUserException ex = assertThrows(
+                InvalidUserException.class,
+                () -> service.signUp("alex@example.com", "secret123", "Alex", blankUsername));
+
+        assertTrue(ex.getMessage().toLowerCase().contains("username"));
+        verifyNoInteractions(users);
+    }
+
+
 }

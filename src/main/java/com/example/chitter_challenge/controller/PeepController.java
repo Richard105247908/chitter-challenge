@@ -25,6 +25,11 @@ public class PeepController {
         this.userService = userService;
     }
 
+    @GetMapping("/")
+    public String root() {
+        return "redirect:/peeps";
+    }
+
     @GetMapping("/peeps")
     public String index(Model model) {
         model.addAttribute("peeps", peepService.getStream());

@@ -151,4 +151,11 @@ class PeepControllerTest {
                 .andExpect(content().string(containsString("&lt;b&gt;hi&lt;/b&gt;")))
                 .andExpect(content().string(not(containsString("<b>hi</b>"))));
     }
+
+    @Test
+    void rootRedirectsToPeeps() throws Exception {
+        mockMvc.perform(get("/"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/peeps"));
+    }
 }
