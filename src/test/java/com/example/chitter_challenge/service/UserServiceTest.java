@@ -170,6 +170,28 @@ public class UserServiceTest {
         assertTrue(msg.contains("password"));
         verifyNoInteractions(users);
     }
+    @Test
+    void signUpRejectsPasswordShorterThanEightCharacters() {
+        InvalidUserException ex = assertThrows(
+                InvalidUserException.class,
+                () -> service.signUp("alex@example.com", "1234567", "Alex", "alex1"));
+
+        String msg = ex.getMessage().toLowerCase();
+        assertTrue(msg.contains("password"));
+        assertTrue(msg.contains("8"));
+        verifyNoInteractions(users);
+    }
+
+    @Test
+    void signUpAcceptsEightCharacterPassword() {
+        User saved = new User("alex@example.com", "hashed", "Alex", "alex1");
+        when(users.save(any())).thenReturn(saved);
+
+        User result = service.signUp("alex@example.com", "12345678", "Alex", "alex1");
+
+        verify(users).save(any());
+        assertSame(saved, result);
+    }
 
 
 }

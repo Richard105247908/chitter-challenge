@@ -32,6 +32,9 @@ public class UserService {
         if (password == null || password.isBlank()) {
             throw new InvalidUserException("Password is required");
         }
+        if (password.length() < 8) {
+            throw new InvalidUserException("Password must be at least 8 characters");
+        }
 
         if (users.findByUsername(username).isPresent()) {
             throw new DuplicateUserException("That username is already taken");
