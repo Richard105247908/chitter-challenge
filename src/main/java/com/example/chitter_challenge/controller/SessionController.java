@@ -2,6 +2,7 @@ package com.example.chitter_challenge.controller;
 
 import com.example.chitter_challenge.model.User;
 import com.example.chitter_challenge.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +30,7 @@ public class SessionController {
     @PostMapping("/sessions")
     public String create(@RequestParam String username,
                          @RequestParam String password,
+                         HttpServletRequest request,
                          HttpSession session,
                          Model model) {
         Optional<User> maybeUser = userService.authenticate(username, password);
@@ -38,6 +40,7 @@ public class SessionController {
             return "sessions/new";
         }
 
+        request.changeSessionId();
         session.setAttribute(PeepController.SESSION_USERNAME, maybeUser.get().getUsername());
         return "redirect:/peeps";
     }

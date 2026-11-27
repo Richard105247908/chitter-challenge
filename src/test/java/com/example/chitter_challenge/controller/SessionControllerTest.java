@@ -8,14 +8,14 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -94,6 +94,45 @@ class SessionControllerTest {
                 .andExpect(content().string(containsString("alex1")))
                 .andExpect(content().string(not(containsString("wrong-password"))));
     }
+
+    @Test
+    void loginChangesTheSessionId() throws Exception {
+        User alex = new User(1L, "alex@example.com", "hash", "Alex", "alex1");
+        when(userService.authenticate("alex1", "password123")).thenReturn(Optional.of(alex));
+
+        MockHttpSession session = new MockHttpSession();
+        String before = session.getId();
+
+        MvcResult result = mockMvc.perform(post("/sessions")
+                        .session(session)
+                        .param("username", "alex1")
+                        .param("password", "password123"))
+                .andReturn();
+
+        assertNotEquals(before, result.getRequest().getSession().getId());
+    }
+
+    @Test
+    void signUpChangesTheSessionId() throws Exception {
+        User saved = new User(1L, "alex@example.com", "hash", "Alex", "alex1");
+        when(userService.signUp("alex@example.com", "password123", "Alex", "alex1"))
+                .thenReturn(saved);
+
+        MockHttpSession session = new MockHttpSession();
+        String before = session.getId();
+
+        MvcResult result = mockMvc.perform(post("/users")
+                        .session(session)
+                        .param("email", "alex@example.com")
+                        .param("password", "password123")
+                        .param("name", "Alex")
+                        .param("username", "alex1"))
+                .andReturn();
+
+        assertNotEquals(before, result.getRequest().getSession().getId());
+    }
+
+
 
 
 
