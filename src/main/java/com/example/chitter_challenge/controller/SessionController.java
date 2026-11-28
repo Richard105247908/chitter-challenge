@@ -52,8 +52,4 @@ public class SessionController {
         session.invalidate();
         return "redirect:/peeps";
     }
-
-
-
-
 }
