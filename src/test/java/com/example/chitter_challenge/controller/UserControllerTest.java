@@ -101,12 +101,11 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("users/new"))
                 .andExpect(content().string(containsString("Test duplicate error")))
-                .andExpect(content().string(containsString("alex@example.com")))
-                .andExpect(content().string(containsString("Alex")))
-                .andExpect(content().string(containsString("alex1")))
+                .andExpect(content().string(containsString("value=\"alex@example.com\"")))
+                .andExpect(content().string(containsString("value=\"Alex\"")))
+                .andExpect(content().string(containsString("value=\"alex1\"")))
                 .andExpect(content().string(not(containsString("password123"))));
     }
-
     @Test
     void signUpChangesTheSessionId() throws Exception {
         User saved = new User(1L, "alex@example.com", "hash", "Alex", "alex1");
