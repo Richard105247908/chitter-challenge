@@ -1,5 +1,6 @@
 package com.example.chitter_challenge.controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
@@ -10,7 +11,7 @@ class UserSessionTest {
 
     @Test
     void currentUsernameReturnsNullWhenSessionIsNull() {
-        assertNull(UserSession.currentUsername((MockHttpSession) null));
+        assertNull(UserSession.currentUsername((HttpSession) null));
     }
 
     @Test
@@ -32,5 +33,15 @@ class UserSessionTest {
 
         assertNull(UserSession.currentUsername(request));
         assertNull(request.getSession(false));
+    }
+
+    @Test
+    void currentUsernameFromRequestReturnsTheLoggedInUser() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute(UserSession.SESSION_USERNAME, "alex1");
+        request.setSession(session);
+
+        assertEquals("alex1", UserSession.currentUsername(request));
     }
 }
