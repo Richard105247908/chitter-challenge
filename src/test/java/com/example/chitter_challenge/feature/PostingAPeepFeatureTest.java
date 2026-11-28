@@ -1,4 +1,4 @@
-package com.example.chitter_challenge;
+package com.example.chitter_challenge.feature;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +38,7 @@ class PostingAPeepFeatureTest {
         mockMvc.perform(get("/peeps").session(browser))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Hello from the feature test")))
-                .andExpect(content().string(containsString("Alex (@alex1)")));
+                .andExpect(content().string(containsString("Alex (@alex1)")))
+                .andExpect(content().string(containsString("action=\"/sessions/delete\"")));
     }
 }
